@@ -34,7 +34,40 @@
         </div>
 
         <div>
+          <label for="genderFilter">Gênero:</label>
+          <select id="genderFilter">
+            <option value="all">Todos</option>
+            <option value="F">Feminino</option>
+            <option value="M">Masculino</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Idade (mín - máx):</label>
+          <div style="display:flex;gap:6px">
+            <input id="ageMin" type="number" value="18" min="0" style="width:80px">
+            <input id="ageMax" type="number" value="65" min="0" style="width:80px">
+          </div>
+        </div>
+
+        <div>
+          <label for="minDays">Mínimo de dias desde última doação:</label>
+          <input id="minDays" type="number" value="90" min="0" style="width:90px">
+        </div>
+
+        <div>
+          <label for="nameSearch">Busca por nome:</label>
+          <input id="nameSearch" type="search" placeholder="parte do nome">
+        </div>
+
+        <div>
+          <label for="showAll">Mostrar todos compatíveis</label>
+          <input id="showAll" type="checkbox">
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px">
           <button id="findBtn">Encontrar doadores elegíveis</button>
+          <button id="clearBtn" type="button">Limpar filtros</button>
         </div>
       </section>
 

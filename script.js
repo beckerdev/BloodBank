@@ -12,7 +12,7 @@ const COMPAT = {
   'O-': ['O-']
 };
 
-const MIN_DAYS = 90; // não notificar quem doou há menos de 90 dias
+const DEFAULT_MIN_DAYS = 90; // valor padrão
 
 function daysSince(dateStr){
   const past = new Date(dateStr);
@@ -30,16 +30,22 @@ async function loadDonors(){
   }
 }
 
-function eligibleFor(targetType, donor){
+function eligibleFor(targetType, donor, filters){
   // compatibilidade ABO/Rh
   if(!COMPAT[targetType].includes(donor.blood)) return false;
 
-  // idade (assumir 18-65 como faixa válida)
-  if(donor.age < 18 || donor.age > 65) return false;
+  // gênero
+  if(filters.gender !== 'all' && donor.gender !== filters.gender) return false;
+
+  // idade
+  if(donor.age < filters.ageMin || donor.age > filters.ageMax) return false;
 
   // tempo desde última doação
   const days = daysSince(donor.last_donation);
-  if(days < MIN_DAYS) return false;
+  if(days < filters.minDays) return false;
+
+  // busca por nome (parte)
+  if(filters.name && !donor.name.toLowerCase().includes(filters.name.toLowerCase())) return false;
 
   return true;
 }
@@ -56,12 +62,24 @@ function renderList(list, targetType){
     const el = document.createElement('div');
     el.className = 'donor';
     el.innerHTML = `
-      <div>
-        <strong>${d.name}</strong>
-        <div class="meta">${d.blood} · ${d.age} anos · ${d.gender} · última doação: ${d.last_donation} (${daysSince(d.last_donation)} dias)</div>
+      <div class="donorTop">
+        <div class="donorLeft">
+          <div class="avatar">${d.name.split(' ').map(x=>x[0]).slice(0,2).join('')}</div>
+          <div>
+            <strong>${d.name}</strong>
+            <div class="meta">${d.age} anos · ${d.gender} · <span style="color:var(--accent-2)">${d.city}</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div class="bloodTag">${d.blood}</div>
+          <div class="meta" style="font-size:0.82rem">Última: ${d.last_donation} · ${daysSince(d.last_donation)}d</div>
+        </div>
       </div>
-      <div>
-        <button class="notify" data-id="${d.id}">Notificar</button>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="meta">📞 ${d.phone} · ✉️ ${d.email}</div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="notify" data-id="${d.id}">Notificar</button>
+        </div>
       </div>
     `;
     container.appendChild(el);
@@ -85,18 +103,37 @@ function renderList(list, targetType){
 document.getElementById('findBtn').addEventListener('click', async ()=>{
   const target = document.getElementById('bloodType').value;
   const qty = parseInt(document.getElementById('quantity').value,10) || 1;
+  const gender = document.getElementById('genderFilter').value;
+  const ageMin = parseInt(document.getElementById('ageMin').value,10) || 18;
+  const ageMax = parseInt(document.getElementById('ageMax').value,10) || 65;
+  const minDays = parseInt(document.getElementById('minDays').value,10) || DEFAULT_MIN_DAYS;
+  const name = document.getElementById('nameSearch').value.trim();
+  const showAll = document.getElementById('showAll').checked;
+
   const donors = await loadDonors();
 
-  // filtrar por elegibilidade
-  const eligibles = donors.filter(d => eligibleFor(target,d));
+  const filters = {gender, ageMin, ageMax, minDays, name};
+
+  // filtrar por elegibilidade + filtros adicionais
+  let eligibles = donors.filter(d => eligibleFor(target,d,filters));
 
   // ordenar: preferir doadores com mais dias desde a última doação
   eligibles.sort((a,b)=> daysSince(b.last_donation) - daysSince(a.last_donation));
 
-  // limitar pela quantidade necessária (mas mostrar lista completa para opção manual)
-  const suggested = eligibles.slice(0, qty);
+  const suggested = showAll ? eligibles : eligibles.slice(0, qty);
 
   renderList(suggested.length ? suggested : eligibles, target);
+});
+
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  document.getElementById('genderFilter').value = 'all';
+  document.getElementById('ageMin').value = 18;
+  document.getElementById('ageMax').value = 65;
+  document.getElementById('minDays').value = DEFAULT_MIN_DAYS;
+  document.getElementById('nameSearch').value = '';
+  document.getElementById('showAll').checked = false;
+  document.getElementById('quantity').value = 1;
+  document.getElementById('list').innerHTML = '<p>Filtros limpos. Selecione tipo e clique em "Encontrar doadores elegíveis".</p>';
 });
 
 // carregar inicialmente um conjunto vazio

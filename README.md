@@ -8,6 +8,17 @@ Como funciona
 - O app filtra doadores que são compatíveis segundo regras ABO/Rh e que não doaram nos últimos 90 dias.
 - Notificações são simuladas no console do navegador e alteram o botão para "Notificado".
 
+Novos filtros disponíveis
+- Gênero (Todos / Feminino / Masculino)
+- Faixa etária (mínimo e máximo)
+- Mínimo de dias desde a última doação (padrão 90)
+- Busca por nome (parte do nome)
+- Checkbox "Mostrar todos compatíveis" para ignorar o limitador de quantidade e listar todos os elegíveis
+
+Campos de contato agora incluídos
+- Cada doador em `donors.json` contém `phone`, `city` e `email`.
+- Esses campos são exibidos na ficha do doador (telefone e e-mail visíveis) para facilitar a notificação manual.
+
 Requisitos
 - Navegador moderno (Chrome, Firefox, Edge).
 - Um servidor local simples para servir arquivos (o fetch do JSON não funciona via file://).
