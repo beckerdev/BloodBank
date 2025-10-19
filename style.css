@@ -37,7 +37,7 @@ header p{margin:6px 0 0;color:var(--muted)}
   display:grid;
   grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
   gap:12px;
-  align-items:end;
+  align-items:start; /* allow internal elements to align at top */
 }
 
 .controls > div{
@@ -45,10 +45,19 @@ header p{margin:6px 0 0;color:var(--muted)}
   padding:14px;
   border-radius:10px;
   border: 1px solid rgba(255,255,255,0.03);
+  min-width: 0; /* allow grid items to shrink and prevent overflow */
+}
+
+.controls .wide{min-width:0}
+
+@media(min-width:900px){
+  .controls .wide{grid-column:span 2}
 }
 
 label{display:block;font-size:0.85rem;margin-bottom:8px;color:var(--muted)}
-select,input{padding:10px 12px;border:1px solid rgba(255,255,255,0.04);border-radius:8px;background:transparent;color:inherit;font-size:0.98rem}
+.controls select, .controls input{padding:10px 12px;border:1px solid rgba(255,255,255,0.04);border-radius:8px;background:transparent;color:inherit;font-size:0.98rem;width:100%;box-sizing:border-box}
+/* keep small inputs when inline style sets width (age fields etc.) */
+select,input{font-size:0.98rem}
 input[type="search"]{padding-left:10px}
 
 button{

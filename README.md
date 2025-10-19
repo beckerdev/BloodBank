@@ -12,7 +12,7 @@ Novos filtros disponíveis
 - Gênero (Todos / Feminino / Masculino)
 - Faixa etária (mínimo e máximo)
 - Mínimo de dias desde a última doação (padrão 90)
- - Mínimo de dias desde a última doação (padrão 120 — ~4 meses)
+- Mínimo de dias desde a última doação (padrão 120 — ~4 meses)
 - Busca por nome (parte do nome)
 - Checkbox "Mostrar todos compatíveis" para ignorar o limitador de quantidade e listar todos os elegíveis
 
@@ -22,17 +22,6 @@ Campos de contato agora incluídos
 
 Requisitos
 - Navegador moderno (Chrome, Firefox, Edge).
-- Um servidor local simples para servir arquivos (o fetch do JSON não funciona via file://).
-
-Executando localmente
-Você pode usar o Python para servir os arquivos na pasta atual:
-
-```bash
-# Python 3
-python3 -m http.server 8000
-```
-
-Depois abra `http://localhost:8000` no navegador e clique em "Encontrar doadores elegíveis".
 
 Notas
 - O arquivo `donors.json` contém amostras de doadores. Adapte conforme sua base real.
