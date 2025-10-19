@@ -12,6 +12,7 @@ Novos filtros disponíveis
 - Gênero (Todos / Feminino / Masculino)
 - Faixa etária (mínimo e máximo)
 - Mínimo de dias desde a última doação (padrão 90)
+ - Mínimo de dias desde a última doação (padrão 120 — ~4 meses)
 - Busca por nome (parte do nome)
 - Checkbox "Mostrar todos compatíveis" para ignorar o limitador de quantidade e listar todos os elegíveis
 

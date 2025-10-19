@@ -12,7 +12,7 @@ const COMPAT = {
   'O-': ['O-']
 };
 
-const DEFAULT_MIN_DAYS = 90; // valor padrão
+const DEFAULT_MIN_DAYS = 120; // 4 meses ~ 120 dias
 
 function daysSince(dateStr){
   const past = new Date(dateStr);
@@ -72,7 +72,7 @@ function renderList(list, targetType){
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
           <div class="bloodTag">${d.blood}</div>
-          <div class="meta" style="font-size:0.82rem">Última: ${d.last_donation} · ${daysSince(d.last_donation)}d</div>
+          <div class="meta" style="font-size:0.82rem">Última: ${d.last_donation} · <span class="days-since" data-date="${d.last_donation}">${daysSince(d.last_donation)}d</span></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
@@ -98,6 +98,15 @@ function renderList(list, targetType){
       }
     });
   });
+
+  // atualizar os contadores de dias a cada minuto para manter em relação à data atual
+  if(window._daysSinceInterval) clearInterval(window._daysSinceInterval);
+  window._daysSinceInterval = setInterval(()=>{
+    container.querySelectorAll('.days-since').forEach(span =>{
+      const date = span.dataset.date;
+      span.textContent = daysSince(date) + 'd';
+    });
+  }, 60 * 1000);
 }
 
 document.getElementById('findBtn').addEventListener('click', async ()=>{
